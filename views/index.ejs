@@ -1,0 +1,54 @@
+<!-- index.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Habit Tracker</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <style>
+    /* Additional Styles */
+    .today {
+      background-color: #ffc107;
+    }
+
+    .previous-day {
+      background-color: #e9ecef;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Habit Tracker</h1>
+    
+    <!-- Add a new habit -->
+    <form action="/habits" method="POST">
+      <input type="text" name="name" placeholder="Enter a habit">
+      <button type="submit">Add Habit</button>
+    </form>
+
+    <hr>
+
+    <!-- List all habits -->
+    <% if (habits.length > 0) { %>
+      <% habits.forEach((habit, index) => { %>
+        <div class="habit-card fade-in" style="animation-delay: <%= index * 0.1 %>s">
+          <h3><%= habit.name %></h3>
+          <ul>
+            <li class="<%= habit.date && habit.date.toDateString() === new Date().toDateString() ? 'today' : 'previous-day' %>">
+              <form action="/habits/<%= habit.id %>" method="POST">
+                <label><input type="radio" name="status" value="Done" <% if (habit.status === 'Done') { %>checked<% } %>> Done</label>
+                <label><input type="radio" name="status" value="Not done" <% if (habit.status === 'Not done') { %>checked<% } %>> Not Done</label>
+                <label><input type="radio" name="status" value="None" <% if (habit.status === 'None') { %>checked<% } %>> None</label>
+                <button type="submit">Save</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p>No habits found.</p>
+    <% } %>
+  </div>
+</body>
+</html>
