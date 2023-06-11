@@ -82,18 +82,24 @@ app.post('/habits/:id', (req, res) => {
   }
 });
 
+// ...
+
 // Delete habit
 app.post('/habits/:id/delete', (req, res) => {
   const habitId = req.params.id;
 
   if (habitId) {
-    pool.query('DELETE FROM habits WHERE id = ?', [habitId], (err) => {
+    pool.query('DELETE FROM habits WHERE id = ?', habitId, (err) => {
       if (err) throw err;
 
-      res.sendStatus(200);
+      // After deleting the habit, redirect to the home page to refresh the habit list
+      res.redirect('/');
     });
   }
 });
+
+// ...
+
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');

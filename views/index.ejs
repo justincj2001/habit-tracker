@@ -39,7 +39,8 @@
               <li class="<%= habit['day' + i + '_status'] === 'None' ? 'none' : (habit['day' + i + '_status'] === 'Done' ? 'done' : 'not-done') %>">
                 <form action="/habits/<%= habit.id %>" method="POST">
                   <input type="hidden" name="dayIndex" value="<%= i %>">
-                  <label><input type="radio" name="status" value="Done" <% if (habit['day' + i + '_status'] === 'Done') { %>checked<% } %>> Done</label>
+                  <label for="status<%= i %>">Day <%= i %>:</label>
+                  <label><input id="status<%= i %>" type="radio" name="status" value="Done" <% if (habit['day' + i + '_status'] === 'Done') { %>checked<% } %>> Done</label>
                   <label><input type="radio" name="status" value="Not done" <% if (habit['day' + i + '_status'] === 'Not done') { %>checked<% } %>> Not Done</label>
                   <label><input type="radio" name="status" value="None" <% if (habit['day' + i + '_status'] === 'None') { %>checked<% } %>> None</label>
                   <button type="submit">Save</button>
