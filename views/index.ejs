@@ -35,7 +35,7 @@
         <div class="habit-card fade-in" style="animation-delay: <%= index * 0.1 %>s">
           <h3><%= habit.name %></h3>
           <ul>
-            <% for (let i = 7; i >= 1; i--) { %>
+            <% for (let i = 1; i <= 7; i++) { %>
               <li class="<%= habit['day' + i + '_status'] === 'None' ? 'none' : (habit['day' + i + '_status'] === 'Done' ? 'done' : 'not-done') %>">
                 <form action="/habits/<%= habit.id %>" method="POST">
                   <input type="hidden" name="dayIndex" value="<%= i %>">
