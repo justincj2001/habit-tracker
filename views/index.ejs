@@ -20,7 +20,7 @@
 <body>
   <div class="container">
     <h1>Habit Tracker</h1>
-    
+
     <!-- Add a new habit -->
     <form action="/habits" method="POST">
       <input type="text" name="name" placeholder="Enter a habit">
@@ -35,12 +35,20 @@
         <div class="habit-card fade-in" style="animation-delay: <%= index * 0.1 %>s">
           <h3><%= habit.name %></h3>
           <ul>
-            <li class="<%= habit.date && habit.date.toDateString() === new Date().toDateString() ? 'today' : 'previous-day' %>">
-              <form action="/habits/<%= habit.id %>" method="POST">
-                <label><input type="radio" name="status" value="Done" <% if (habit.status === 'Done') { %>checked<% } %>> Done</label>
-                <label><input type="radio" name="status" value="Not done" <% if (habit.status === 'Not done') { %>checked<% } %>> Not Done</label>
-                <label><input type="radio" name="status" value="None" <% if (habit.status === 'None') { %>checked<% } %>> None</label>
-                <button type="submit">Save</button>
+            <% for (let i = 7; i >= 1; i--) { %>
+              <li class="<%= habit['day' + i + '_status'] === 'None' ? 'none' : (habit['day' + i + '_status'] === 'Done' ? 'done' : 'not-done') %>">
+                <form action="/habits/<%= habit.id %>" method="POST">
+                  <input type="hidden" name="dayIndex" value="<%= i %>">
+                  <label><input type="radio" name="status" value="Done" <% if (habit['day' + i + '_status'] === 'Done') { %>checked<% } %>> Done</label>
+                  <label><input type="radio" name="status" value="Not done" <% if (habit['day' + i + '_status'] === 'Not done') { %>checked<% } %>> Not Done</label>
+                  <label><input type="radio" name="status" value="None" <% if (habit['day' + i + '_status'] === 'None') { %>checked<% } %>> None</label>
+                  <button type="submit">Save</button>
+                </form>
+              </li>
+            <% } %>
+            <li>
+              <form action="/habits/<%= habit.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this habit?');">
+                <button type="submit" class="delete-button">Delete</button>
               </form>
             </li>
           </ul>

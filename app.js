@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const mysql = require('mysql2');
 const app = express();
@@ -34,7 +36,15 @@ app.post('/habits', (req, res) => {
   if (name) {
     const habit = {
       name,
-      user_id: 1 // Replace with the desired user ID
+      user_id: 1, // Replace with the desired user ID
+      day1_status: 'None',
+      day2_status: 'None',
+      day3_status: 'None',
+      day4_status: 'None',
+      day5_status: 'None',
+      day6_status: 'None',
+      day7_status: 'None',
+      longest_streak: 0
     };
 
     pool.query('INSERT INTO habits SET ?', habit, (err) => {
@@ -51,10 +61,36 @@ app.post('/habits/:id', (req, res) => {
   const { status } = req.body;
 
   if (habitId && status) {
-    pool.query('UPDATE habits SET status = ? WHERE id = ?', [status, habitId], (err) => {
+    const dayIndex = Number(req.body.dayIndex);
+
+    let updateQuery = `UPDATE habits SET day${dayIndex}_status = ? WHERE id = ?`;
+
+    // Check if updating today's status
+    if (dayIndex === 1) {
+      updateQuery += `, longest_streak = CASE
+        WHEN day1_status = 'None' THEN longest_streak + 1
+        WHEN day1_status = 'Done' THEN longest_streak
+        ELSE longest_streak - 1
+      END`;
+    }
+
+    pool.query(updateQuery, [status, habitId], (err) => {
       if (err) throw err;
 
       res.redirect('/');
+    });
+  }
+});
+
+// Delete habit
+app.post('/habits/:id/delete', (req, res) => {
+  const habitId = req.params.id;
+
+  if (habitId) {
+    pool.query('DELETE FROM habits WHERE id = ?', [habitId], (err) => {
+      if (err) throw err;
+
+      res.sendStatus(200);
     });
   }
 });
